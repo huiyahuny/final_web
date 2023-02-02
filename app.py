@@ -26,10 +26,10 @@ import requests
 from time import sleep
 import urllib3
 import json
-import os, random, string
+import os, pyscreenshot, random, string
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 # import easyocr
-# import pyscreenshot
+
 # 6st test
 
 
