@@ -4,6 +4,7 @@ const ctx = canvas.getContext("2d");
 const brush = document.getElementById("jsBrush");
 const erase = document.getElementById("jsErase");
 const submitButton = document.getElementById("jsSubmitButton");
+const submitButton2 = document.getElementById("jsSubmitButton2");
 
 // send image
 submitButton.addEventListener("click", () => {
@@ -21,6 +22,37 @@ submitButton.addEventListener("click", () => {
             console.error('Error:', error);
         });
 });
+
+submitButton2.addEventListener("click", () => {
+    const dataURI = canvas.toDataURL();
+    const imageBlob = dataURIToBlob(dataURI); // Convert the dataURI to a Blob object
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png'); // Add the Blob object to the form data with a file name
+    fetch('/predict', {
+        method: 'POST', 
+        body: formData, // Use the formData instead of JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+
+// Helper function to convert dataURI to Blob
+function dataURIToBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i += 1) {
+        int8Array[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([arrayBuffer], { type: mimeString });
+}
+
 
 // Brush option
 const INITIAL_COLOR = "#2c2c2c";
