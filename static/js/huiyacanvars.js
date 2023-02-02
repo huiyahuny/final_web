@@ -13,19 +13,21 @@ submitButton.addEventListener("click", () => {
         body: JSON.stringify({ image: dataURI }),
         headers: { 'Content-Type': 'application/json' },
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 });
 
+// Brush option
 const INITIAL_COLOR = "#2c2c2c";
 const INITIAL_LINEWIDTH = 5.0;
 const CANVAS_SIZE = 500;
 
+// canvas option
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = INITIAL_LINEWIDTH;
@@ -39,6 +41,7 @@ let painting = false;
 function startPainting() { painting = true; }
 function stopPainting() { painting = false; }
 
+// mousemove option
 function onMouseMove(event) {
     // get the current size of the canvas
     let width = canvas.width;
@@ -53,8 +56,8 @@ function onMouseMove(event) {
     y = y * height / canvas.offsetHeight;
 
     ctx.lineWidth = 3.5;
-    if(mode === brush){
-        if(!painting) {
+    if (mode === brush) {
+        if (!painting) {
             ctx.beginPath();
             ctx.moveTo(x, y);
         }
@@ -73,9 +76,9 @@ function onMouseMove(event) {
 function handleModeChange(event) {
     mode = event.target;
     // Button Highlight
-    for(i = 0 ; i < MODE_BUTTON.length ; i++){
+    for (i = 0; i < MODE_BUTTON.length; i++) {
         var button = MODE_BUTTON[i];
-        if(button === mode){
+        if (button === mode) {
             button.style.backgroundColor = "skyblue";
         }
         else {
