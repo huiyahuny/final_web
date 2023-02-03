@@ -60,6 +60,10 @@ def home():
 def intro():
     return render_template('0_intro.html')
 
+@app.route('/sample')
+def sample():
+    return render_template('sample.html')
+
 
 ################### 1번째 게임 : 유사도게임 ###################
 @app.route("/vgg")
