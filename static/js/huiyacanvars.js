@@ -70,39 +70,42 @@ const MODE_BUTTON = [brush, erase];
 let mode = brush;
 let painting = false;
 
-function startPainting() { painting = true; }
-function stopPainting() { painting = false; }
+function stopPainting(event){
+    painting = false;
+}
 
-// mousemove option
-function onMouseMove(event) {
-    // get the current size of the canvas
-    let width = canvas.width;
-    let height = canvas.height;
+function startPainting(){
+    painting = true;
+}
 
-    // get the position of the mouse relative to the canvas
-    let x = event.offsetX;
-    let y = event.offsetY;
-
-    // Scale the mouse coordinates based on the current canvas size
-    x = x * width / canvas.offsetWidth;
-    y = y * height / canvas.offsetHeight;
-
-    ctx.lineWidth = 3.5;
-    if (mode === brush) {
-        if (!painting) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-        }
-        else {
-            ctx.lineTo(x, y);
-            ctx.stroke();
-        }
+function onMouseMove(event){ //모든 움직임을 감지하고 line을 만든다.
+     //스크린과 캠퍼스가 크기가 다른 경우 offsetX와 offsetY를 사용한다.
+    const x = event.offsetX;
+    const y = event.offsetY;
+    if(!painting){
+        ctx.beginPath(); //path를 만듬
+        ctx.moveTo(x, y); //x, y로 옮김
+    }else{
+        ctx.lineTo(x, y);
+        ctx.stroke();
     }
+}
+
+function onMouseDown(event){
+    painting = true;
+} 
     // else if(mode === erase){
     //     if(painting) {
     //         ctx.clearRect(x-ctx.lineWidth/2, y-ctx.lineWidth/2, ctx.lineWidth, ctx.lineWidth);
     //     }
     // }
+
+function handleSaveClick(){
+    const image = canvas.toDataURL();
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = "PaintJS[🎨]";
+    link.click();
 }
 
 function handleModeChange(event) {
