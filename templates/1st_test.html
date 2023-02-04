@@ -15,10 +15,8 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/styles.css') }}" type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}"
-    type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}" type="text/css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/huiyacanvars.css') }}" type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/huiyaborder.css') }}" type="text/css">
 
 
   <style>
@@ -71,7 +69,7 @@
         <center>
       </div>
 
-      <div class="controls__btns" style="display: flex; justify-content: center;">
+      <div class="controls__btns" style="justify-content: center;">
         <button id="jsBrush">브러쉬</button>
         <button id="jsAllremove">전체지우기</button>
         <button id="jsSubmitButton">제출</button>
@@ -166,7 +164,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/all-plugins.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/plugins-activate.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/huiyacanvars.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/huiyacanvars.js') }}"></script>
 </body>
 
 </html>
