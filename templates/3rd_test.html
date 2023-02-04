@@ -17,9 +17,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/styles.css') }}" type="text/css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}"
     type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/huiyacanvars.css') }}" type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/huiyaborder.css') }}" type="text/css">
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style_canvas.css') }}" type="text/css">
 
   <style>
     body {
@@ -47,26 +45,37 @@
 
 <body>
     <br>
-    <h1 align="center"> 글 -> 그림 </h1>
-    <p style="text-align:center;"> 🐇토끼🐇를 그려주세요
+    <h3><p style="text-align:center;"> 토끼를 그려주세요</h3>
     <div class='container'>
-      <div style="border: px solid; padding :10px; width: 820px; 
+        <div style="border: px solid; padding :10px; width: 820px; 
       height: 500px ; border-radius:2em; margin:auto; 
       padding-top:50px; background-color:#fff ">
-      <div>
-      <!--그림판-->
-      <center>
-        <canvas id="jsCanvas" class="canvas"></canvas>
-      </center>
+      <!--그림판--> 
+      <!-- 위의 스타일<div>안에 넣음 -->
+                <center>
+                <canvas id="jsCanvas" class="canvas"></canvas>
+                <!-- 브러쉬 -->
+                <div class="controls">
+                    <div class="controls__range" id="jsRange" value="2.5" >
+                </div>
+                <!-- 팬 색 -->
+                <div class="controls__colors" id="jsColors">
+                    <div class="controls__color jsColor" style="background-color: #2c2c2c"></div>
+                    <input type="color" id="jsMyColorControl" name="jsMyColorControl" value="#ffffff" style="display:none">
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="controls__btns">
-      <center>
-        <button id="jsBrush">브러쉬</button>
-        <button id="jsAllremove">전체지우기</button>
-        <button id="jsSubmitButton">제출</button>
-      </center>
+        <button id="jsMode">Fill</button>
+        <button id="jsSave">Save</button>
+        <button id="jsReset">Reset</button>
     </div>
+     
+      </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+    </center>
           <!--그림판 끝-->
         </div>
     <h2>
@@ -121,6 +130,5 @@
    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='js/all-plugins.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='js/plugins-activate.js') }}"></script>
-   <script src="{{ url_for('static', filename='js/huiyacanvars.js') }}"></script>
 </body>
 </html>
