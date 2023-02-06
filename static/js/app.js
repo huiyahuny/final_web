@@ -21,8 +21,8 @@ const heightControls = document.querySelector('#jsHeight');
 // Variable
 
 // 손 - 사이즈 조절함
-let canvasWidth = 820;
-let canvasHeight = 500;
+let canvasWidth = 800;
+let canvasHeight = 300;
 let isPainting = false;
 let isFilling = false;
 // Init setting

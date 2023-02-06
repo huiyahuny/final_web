@@ -15,8 +15,10 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/styles.css') }}" type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}"
+    type="text/css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/huiyacanvars.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/huiyaborder.css') }}" type="text/css">
 
 
   <style>
@@ -52,7 +54,7 @@
 <body>
   <br>
   <h1 align="center"> <br> 유사도 </h1>
-  <h5><p style="text-align:center;">nn초동안 그림을 잘 기억한 후 최대한 비슷하게 그려주세요<br>다 그린 후 제출 버튼을 누르고 다음으로 넘어가세요</h5>
+  <h6><p style="text-align:center;">nn초동안 그림을 잘 기억한 후 최대한 비슷하게 그려주세요<br>다 그린 후 제출 버튼을 누르고 다음으로 넘어가세요</h6>
   <div class='container'>
     <div style="border: px solid; padding :10px; width: 820px; 
         height: 500px ; border-radius:2em; margin:auto; 
@@ -69,7 +71,7 @@
         <center>
       </div>
 
-      <div class="controls__btns" style="justify-content: center;">
+      <div class="controls__btns" style="display: flex; justify-content: center;">
         <button id="jsBrush">브러쉬</button>
         <button id="jsAllremove">전체지우기</button>
         <button id="jsSubmitButton">제출</button>
@@ -164,7 +166,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/all-plugins.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/plugins-activate.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/huiyacanvars.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/huiyacanvars.js') }}"></script>
 </body>
 
 </html>
