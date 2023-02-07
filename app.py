@@ -472,7 +472,7 @@ cur = conn.cursor()
 
 @app.route('/result')
 def result():
-    return render_template('result_2.html')
+    return render_template('dashboard.html')
 
 # @app.route('/charts')
 # def charts():
@@ -507,7 +507,4 @@ if __name__ == '__main__':
     # https://snacky.tistory.com/9
      # host주소와 port number 선언
     app.run(host='0.0.0.0', debug=True)  
-    
-    
-    
     

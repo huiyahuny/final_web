@@ -4,92 +4,31 @@ const ctx = canvas.getContext("2d");
 const brush = document.getElementById("jsBrush");
 const erase = document.getElementById("jsErase");
 const submitButton = document.getElementById("jsSubmitButton");
-const submitButton2 = document.getElementById("jsSubmitButton2");
 
 // send image
-// submitButton.addEventListener("click", () => {
-//     const dataURI = canvas.toDataURL();
-//     fetch('/image-similarity', {
-//         method: 'POST',
-//         body: JSON.stringify({ image: dataURI }),
-//         headers: { 'Content-Type': 'application/json' },
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log('Success:', data);
-//         })
-//         .catch((error) => {
-//             console.error('Error:', error);
-//         });
-// });
-
-// submitButton.addEventListener("click", () => {
-//     const dataURI = canvas.toDataURL();
-//     // const imageBlob = dataURIToBlob(dataURI); // Convert the dataURI to a Blob object
-//     const formData = new FormData();
-//     formData.append('file', dataURLToFile(dataURI, 'image.png')); // Add the Blob object to the form data with a file name
-//     const form = document.getElementById("file");
-//     form.submit();
-// });
-
-submitButton.addEventListener("click", () => {
-    const dataURI = canvas.toDataURL();
+submitButton.addEventListener("click", function () {
+    const dataURL = canvas.toDataURL();
     const formData = new FormData();
-    formData.append('file', dataURLToFile(dataURI, 'image.png'));
-    formData.append('p_path', p_path);
-    formData.append('sim', sim);
-
-    fetch("/image-similarity", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-    .then(result => {
-        document.getElementById("result").innerHTML = result;
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
-});
-    ``
-
-submitButton2.addEventListener("click", () => {
-    const dataURI = canvas.toDataURL();
-    const imageBlob = dataURIToBlob(dataURI); // Convert the dataURI to a Blob object
-    const formData = new FormData();
-    formData.append('image', imageBlob, 'image.png'); // Add the Blob object to the form data with a file name
-    fetch('/predict', {
-        method: 'POST', 
-        body: formData, // Use the formData instead of JSON
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+    formData.append("file(여기바꾸기)", dataURLToFile(dataURL, "image.png"));
+    const form = document.getElementById("form");
+    form.submit();
 });
 
-// Helper function to convert dataURI to Blob
-function dataURIToBlob(dataURI) {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const int8Array = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i += 1) {
-        int8Array[i] = byteString.charCodeAt(i);
+function dataURLToFile(dataURL, fileName) {
+    const byteString = atob(dataURL.split(",")[1]);
+    const mimeString = dataURL.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
     }
-    return new Blob([arrayBuffer], { type: mimeString });
+    return new File([ab], fileName, { type: mimeString });
 }
 
-
-// Brush option
 const INITIAL_COLOR = "#2c2c2c";
 const INITIAL_LINEWIDTH = 5.0;
 const CANVAS_SIZE = 500;
 
-// canvas option
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = INITIAL_LINEWIDTH;
@@ -103,7 +42,6 @@ let painting = false;
 function startPainting() { painting = true; }
 function stopPainting() { painting = false; }
 
-// mousemove option
 function onMouseMove(event) {
     // get the current size of the canvas
     let width = canvas.width;
@@ -118,8 +56,8 @@ function onMouseMove(event) {
     y = y * height / canvas.offsetHeight;
 
     ctx.lineWidth = 3.5;
-    if (mode === brush) {
-        if (!painting) {
+    if(mode === brush){
+        if(!painting) {
             ctx.beginPath();
             ctx.moveTo(x, y);
         }
@@ -138,9 +76,9 @@ function onMouseMove(event) {
 function handleModeChange(event) {
     mode = event.target;
     // Button Highlight
-    for (i = 0; i < MODE_BUTTON.length; i++) {
+    for(i = 0 ; i < MODE_BUTTON.length ; i++){
         var button = MODE_BUTTON[i];
-        if (button === mode) {
+        if(button === mode){
             button.style.backgroundColor = "skyblue";
         }
         else {
@@ -149,6 +87,49 @@ function handleModeChange(event) {
     }
 }
 
+function handleStart(event) {
+    // Mouse down event or touch start event
+    painting = true;
+    let x, y;
+    if (event.type === "mousedown") {
+      x = event.offsetX;
+      y = event.offsetY;
+    } else {
+      x = event.touches[0].clientX - canvas.offsetLeft;
+      y = event.touches[0].clientY - canvas.offsetTop;
+    }
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  }
+  
+  function handleMove(event) {
+    if (!painting) return;
+    let x, y;
+    if (event.type === "mousemove") {
+      x = event.offsetX;
+      y = event.offsetY;
+    } else {
+      x = event.touches[0].clientX - canvas.offsetLeft;
+      y = event.touches[0].clientY - canvas.offsetTop;
+    }
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+  
+  function handleEnd(event) {
+    // Mouse up event or touch end event
+    painting = false;
+  }
+  
+  if (canvas) {
+    canvas.addEventListener("mousedown", handleStart);
+    canvas.addEventListener("mousemove", handleMove);
+    canvas.addEventListener("mouseup", handleEnd);
+    canvas.addEventListener("mouseleave", handleEnd);
+    canvas.addEventListener("touchstart", handleStart);
+    canvas.addEventListener("touchmove", handleMove);
+    canvas.addEventListener("touchend", handleEnd);
+  }
 
 // All Remove Bts
 
