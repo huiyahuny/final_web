@@ -28,7 +28,7 @@ import urllib3
 import json
 import os, pyscreenshot, random, string
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-import easyocr
+# import easyocr
 
 # 6st test
 
