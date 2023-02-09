@@ -10,8 +10,8 @@ import keras.models as kmodels
 import numpy as np
 import keras.utils as utils
 from anchor import *
+import PIL
 
-# 2nd test
 # 3rd test
 import pandas
 import torch
@@ -28,7 +28,7 @@ import urllib3
 import json
 import os, pyscreenshot, random, string
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-# import easyocr
+import easyocr
 
 # 6st test
 
@@ -36,18 +36,6 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
  # flask name 선언
 app = Flask(__name__)
 
-
-vgg_model = kapp.VGG16(weights='imagenet', include_top=False)
-model = kmodels.Model(inputs=vgg_model.input, outputs=vgg_model.get_layer('block5_pool').output)
-
-def get_image_feature(img_path):
-    img = utils.load_img(img_path, target_size=(224, 224))
-    img = utils.img_to_array(img)
-    img = np.expand_dims(img, axis=0)
-    img = kapp.vgg16.preprocess_input(img)
-    features = model.predict(img)
-    features = features.flatten()
-    return features
 
 
 # HTML 렌더링
@@ -62,10 +50,27 @@ def intro():
 
 
 ################### 1번째 게임 : 유사도게임 ###################
+vgg_model = kapp.VGG16(weights='imagenet', include_top=False)
+model = kmodels.Model(inputs=vgg_model.input, outputs=vgg_model.get_layer('block5_pool').output)
+anch = ''
+
+# img_path: 
+def get_image_feature(image):
+    img = utils.load_img(image, target_size=(224, 224))
+    img = utils.img_to_array(img)
+    img = np.expand_dims(img, axis=0)
+    img = kapp.vgg16.preprocess_input(img)
+    features = model.predict(img)
+    features = features.flatten()
+    return features
+
 @app.route("/vgg")
 def similarity_image():
     q, p_path, h_path, sim = random_sim()
-    return render_template('1st_test.html', q=q, p_path=p_path, h_path=h_path, sim=sim)
+    global anch
+    anch = q
+    print(anch)
+    return render_template('1st_test.html', h_path=h_path)
 
 # @app.route("/sim_test", methods=["POST"])
 # def sim_test():
@@ -73,30 +78,125 @@ def similarity_image():
 #     sim = float(request.form['sim'])
 #     return render_template('sim_test.html', p_path=p_path, sim=sim)
 
-@app.route("/image-similarity", methods=["POST"])
+@app.route("/image_similarity", methods=["POST"])
 def image_similarity():
-    f = request.files['file']
-    img_path = 'static/1/img/img.png'
-    f.save(img_path)
-    p_path = str(request.form['p_path'])
-    sim = float(request.form['sim'])
+ 
+    print('1111111111111111')
+    # 이미지 받기(blob)
+    if request.method == 'POST':
+        image = request.files["image"]
+        # Save image_binary to a file or a variable
+        image.save('유사도image.png')
+        image = '유사도image.png'
+        print('222222222222222222')
+        global anch
+        print(anch)
+        global anchor
+        p_path = anchor[anch][0]
+        sim = anchor[anch][2]
+
+
+    print('333333333333333')
+    
 
     features1 = get_image_feature(p_path)
-    features2 = get_image_feature(img_path)
-
+    features2 = get_image_feature(image)
+    print('44444444444444')
     cosine_similarity = np.dot(features1, features2) / (np.linalg.norm(features1) * np.linalg.norm(features2))
     print(cosine_similarity)
+   
+   
+    # db 저장하기
+    OX = []
     if cosine_similarity >= sim:
-        return render_template('success.html')
-    else:
-        return render_template('fail.html')
+        OX.append('정답')
+    else: OX.append('오답') 
+    print(OX)
+   
+
+    # DB 생성 / 이미 있으면 나중에 주석처리하기.
+    # isolation_level = None (auto commit)
+    conn = sqlite3.connect('ijm.db', isolation_level=None)
+    # 커서
+    cursor = conn.cursor()
+    # 테이블 생성(데이터 타입 = TEST, NUMERIC, INTEGER, REAL, BLOB(image) 등)
+    # 필드명(ex. name) -> 데이터 타입(ex. text) 순서로 입력 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS sim (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        game text,
+        point float,
+        OX text)""")
+
+    # db 에 정보 저장
+    game = '유사도 검사'
+    point = float(cosine_similarity)
+    OX = OX[0]
+
+    cursor.execute("""
+        INSERT INTO sim (game, point, OX) VALUES (?,?,?)          
+        """, (game, point, OX)
+        )
+
+    conn.commit()
+    cursor.close()
+    conn.close()    
+    return render_template('1st_test.html')
 
 
 ################### 2번째 게임 : 스트루프 ###################
-@app.route('/stroop')
+@app.route('/stroop') ## 여기에 들어가야하는거 넣어주세요~!!!1 지영
 def stroop():
     return render_template('2nd_test.html')
 
+@app.route("/save",methods=['POST']) #flask 웹 페이지 경로
+def save(): # 경로에서 실행될 기능 선언
+    correct = []
+    my_correct=[]
+    OX = []
+    result = request.form['result']
+    correct.append(result[0:2])  # 문자열 슬라이싱해서 들고와야한다. 
+    my_correct.append(result[3:5])
+    OX.append(result[6:8])
+    print(correct)
+    print(my_correct)
+    print(OX)
+    
+    # # 확인용
+    # check = request.form['check']
+    # print(check)
+    
+    # DB 생성 / 이미 있으면 나중에 주석처리하기.
+    # isolation_level = None (auto commit)
+    conn = sqlite3.connect('ijm.db', isolation_level=None)
+    # 커서
+    cursor = conn.cursor()
+    # 테이블 생성(데이터 타입 = TEST, NUMERIC, INTEGER, REAL, BLOB(image) 등)
+    # 필드명(ex. name) -> 데이터 타입(ex. text) 순서로 입력 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS stroop (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        game text,
+        correct text,
+        my_correct text,
+        OX text)""")
+
+    # db 에 정보 저장
+    game = '스트루프'
+    correct = correct[0]
+    my_correct = my_correct[0]
+    OX = OX[0]
+    print('111111111')
+    cursor.execute("""
+        INSERT INTO stroop (game, correct,my_correct, OX) VALUES (?,?,?,?)          
+        """, (game, correct,my_correct, OX)
+        )
+    print('222222222')
+
+    conn.commit()
+    cursor.close()
+    conn.close()    
+    return render_template('2nd_test.html')
 
 ################### 3번째 게임 : 글->그림 ###################
 @app.route('/text_to_img')
@@ -105,11 +205,33 @@ def text_to_img():
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
+    print('1111111111111111')
+    # 이미지 받기(blob)
+    if request.method == 'POST':
+        image = request.files["image"]
+        # Save image_binary to a file or a variable
+        image.save('image.png')
+
+
+
+    # with open("image.png", "wb") as f:
+    #     f.write(image)
+    
+    print('22222222222222')
+    
+    # e=open('Base64_dec.png','wb') 
+    # e.write(image_binary)
+    # e.save(image_binary)
+    # e.close()
+    
+    
+    
     # Model(YOLOv5 종속 항목 설치)
     model = torch.hub.load('ultralytics/yolov5', 'custom', path = 'best.pt', force_reload =True)
     # Image
-    img = ['C:\\Users\\admin\\Desktop\\최종 프로젝트\\글,그림\\벤치.png']
-    # 그림판에그림을 그려서 어떻게 여기에 갖고올지 생각... img 변수에 담기
+    print('asdadasdasdasdas')
+    img = PIL.Image.open('image.png')
+    print('ㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㅁㄴㅇㅁㄴㅇㅁㄴㅇ')
     ########## 이 사진을 어떻게 가지고 올지에 대해서 알아봐야한다. !!
 
     # 추론
@@ -123,10 +245,11 @@ def predict():
     #results.xyxy[0]  # 예측 (tensor)
     # results.pandas().xyxy[0]  # 예측 (pandas)
     conf = results.pandas().xyxy[0]
+    print(conf)
    
     # 오답 여부
     OX = []
-    if str(conf.name) == '토끼':
+    if conf.name[0] == 'rabbit':
         OX.append('정답')
     else : OX.append('오답')
     print(OX)
@@ -159,9 +282,7 @@ def predict():
     conn.commit()
     cursor.close()
     conn.close()    
-
-    
-    render_template('3th_test.html')
+    return render_template('3rd_test.html')
 
 ################ 4번째게임 : 틀린그림찾기 ###############
 
@@ -269,13 +390,6 @@ def end():
 def pygame():
     return render_template('5th_test.html')
 
-
-################### 6번째 게임 : STT ###################
-@app.route('/stt')
-def stt():
-    return render_template('6th_test.html')
-
-
 @app.route('/get_screenshot', methods=['POST'])
 def get_screenshot():
     
@@ -294,38 +408,46 @@ def get_screenshot():
             
         return level, score
 
-    # # 기억력 게임을 완료한 이후 easyocr을 이용해 게임결과 이미지에서 텍스트추출
-    # im = pyscreenshot.grab()
-    # random_id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
-    # file_name = 'static/5/img/{}.png'.format(random_id)
-    # im.save(file_name)
-    # reader = easyocr.Reader(['ko', 'en'])
+    # 기억력 게임을 완료한 이후 easyocr을 이용해 게임결과 이미지에서 텍스트추출
+    im = pyscreenshot.grab()
+    random_id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
+    file_name = 'static/5/img/{}.png'.format(random_id)
+    im.save(file_name)
+    reader = easyocr.Reader(['ko', 'en'])
     
-    # with open(file_name,'rb') as pf:
-    #     img = pf.read()
-    #     result = reader.readtext(img)
-    #     for res in result:
-    #         if res[1][0:10] == 'Your level':    
-    #             level = res[1][-1]
-    #             result = get_score(int(level))
+    with open(file_name,'rb') as pf:
+        img = pf.read()
+        result = reader.readtext(img)
+        for res in result:
+            if res[1][0:10] == 'Your level':    
+                level = res[1][-1]
+                result = get_score(int(level))
     
-    # # 텍스트로 추출한 결과를 DB에 저장
-    # conn = sql.connect('remember.db', isolation_level=None)
-    # cur = conn.cursor()
-    # cur.execute(
-    #     'CREATE TABLE IF NOT EXISTS remember (level TEXT, score TEXT)')
-    # cur.execute("""INSERT INTO remember(level, score) 
-    #                 VALUES(?, ?)""", (result[0], result[1]))
-    # conn.commit()
-    # cur.close()
-                
-    # os.remove(file_name)
+    # 텍스트로 추출한 결과를 DB에 저장
+    conn = sqlite3.connect('ijm.db', isolation_level=None)
+    cursor = conn.cursor()
+    cursor.execute(
+        """CREATE TABLE IF NOT EXISTS remember (level TEXT, score TEXT)""")
+    cursor.execute("""INSERT INTO remember(level, score) 
+                    VALUES(?, ?)""", (result[0], result[1]))
+    conn.commit()
+    cursor.close()
+    os.remove(file_name)
     
 
-DATABASE_URI = 'sttdb.db'
-# ---- DB에서 데이터를 불러오기 ----
-conn = sql.connect(DATABASE_URI, isolation_level=None)
-cur = conn.cursor()
+
+################### 6번째 게임 : STT ###################
+@app.route('/stt')
+def stt():
+    return render_template('6th_test.html')
+
+
+
+
+# DATABASE_URI = 'ijm.db'
+# # ---- DB에서 데이터를 불러오기 ----
+# conn = sql.connect(DATABASE_URI, isolation_level=None)
+# cur = conn.cursor()
 # cur.execute(
 #     'CREATE TABLE IF NOT EXISTS STT (id TEXT, p TEXT, url TEXT)')
 # id = 1
@@ -468,7 +590,7 @@ cur = conn.cursor()
 #         return render_template('6th_test.html', target = sentence2, sound = sentence1, ck=String)
 
 
-################### 결과페이지 : 대시보드 ###################
+################## 결과페이지 : 대시보드 ###################
 
 @app.route('/result')
 def result():
@@ -506,5 +628,5 @@ if __name__ == '__main__':
     # https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.run
     # https://snacky.tistory.com/9
      # host주소와 port number 선언
-    app.run(host='0.0.0.0', debug=True)  
+    app.run(host='0.0.0.0')  
     
