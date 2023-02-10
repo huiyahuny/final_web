@@ -72,46 +72,46 @@
         </div>
       </div>
       
-    <div class="container">
+      <div class="container">
         <div style="border: px solid; padding :10px; width: 820px; 
         height: 450px ; border-radius:2em; margin : auto;
         padding-top:50px; background-color:rgb(255, 255, 255) ">
 
             <div id=baijing>
                 <div id='sound_head'>
-                    <audio autoplay></audio> <!-- 시작버튼 -->
+                    <audio id='jsrecode' autoplay></audio> <!-- 시작버튼 -->
                     <div class='line'>
-                        <input class="btn" onclick="startRecording()" type="button" value="시작" />
+                        <input id='start' class="btn" onclick="startRecording()" type="submit" value="시작" />
                     </div>
                     <div class='line'>
-                        <form action="/STT" method="post">
-                            <!-- 멈추기버튼 -->
-                            <input class="btn" onclick="stopRecording()" id='dw' type="submit" value="멈춰" />
-                        </form>
+                        <!-- <form action="/STT" method="post"> -->
+                        <!-- 멈추기버튼 -->
+                        <input class="btn" onclick="stopRecording()" id='dw' type="submit" value="멈춰" />
+                        <!-- </form> -->
                     </div>
                 </div>
                 <div id='contens'>
                     <div class='qu'>
-                            <input id="code_reddit" type="hidden" value="{{ target }}" autocomplete="off">
-                            <button class="btn" onclick="g_gout()">재생</button> <!-- 정답 읽어주는 재생버튼 -->
-                            <div class = 'line'></div>
+                        <input id="code_reddit" type="hidden" value="{{ target }}" autocomplete="off">
+                        <button class="btn" onclick="g_gout()">재생</button> <!-- 정답 읽어주는 재생버튼 -->
+                        <div class='line'></div>
                         <table border=0 class='target_align'>
                             <th>따라하기 : </td>
-                            <td> {{ target }}</td>
+                            <td>{{ target }}</td>
                         </table>
                     </div>
                     <div class='qu'>
                         <table border=0 class='target_align'>
-                            <!-- <div class='line'><input onclick="playRecording()" type="button" value="播放" /></div> -->
+                            <!--<div class='line'><input onclick="playRecording()" type="button" value="播放" /></div> -->
                             <th>인식결과 : </td>
-                            <td> {{ sound }}</td>
+                            <td>{{ sound }}</td>
                         </table>
                     </div>
                     <div id='result'>
-                        <p>{{ ck }}</p>
+                        <td>{{ ck }}</td>
                     </div>
                 </div>
-                <!-- <input onclick="uploadAudio()" type="button" value="提交" /> -->
+                <!--<input onclick="uploadAudio()" type="button" value="提交" />-->
                 <div id="recordingslist"></div>
             </div>
 
@@ -132,12 +132,35 @@
                         sampleBits: 16,
                         sampleRate: 16000
                     });
+
+                    /*document.getElementById("start").addEventListener("click", function() {
+                        //let canvas = document.getElementById("jsrecode");
+                        let dataURL = recorder.toDataURL();
+                        let blob = dataURLToBlob(dataURL);
+                        let formData = new FormData();
+                        formData.append("recode", blob);
+                        let xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/STT", true);
+                        xhr.send(formData);
+                    });
+                  
+                    function dataURLToBlob(dataURL) {
+                        let parts = dataURL.split(";base64,");
+                        let contentType = parts[0].split(":")[1];
+                        let raw = window.atob(parts[1]);
+                        let rawLength = raw.length;
+                        let uInt8Array = new Uint8Array(rawLength);
+                        for (let i = 0; i < rawLength; ++i) {
+                            uInt8Array[i] = raw.charCodeAt(i);
+                        }
+                        return new Blob([uInt8Array], {type: contentType});
+                    }*/
                 }
 
                 //-------------------------------------------------------------------------------------
                 // 멈추기 버튼
-                function stopRecording() {
-                    //recorder.stop();
+                function stopRecording(url) {
+                    /*//recorder.stop();
                     var blob = recorder.getBlob();
                     var url = URL.createObjectURL(blob);
                     var div = document.createElement('div');
@@ -156,8 +179,47 @@
                     //hf.click();            // 다운로드 클릭
                     //a = div.appendChild(au);
                     //div.appendChild(hf);
-                    recordingslist.appendChild(div);
-                }
+                    recordingslist.appendChild(div);*/
+
+
+                    //----------------
+
+                    var blob = recorder.getBlob();
+                    var url = URL.createObjectURL(blob);
+                    var fd = new FormData();
+                    fd.append("recode", blob, 'nefile');
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/STT", true);
+                    // xhr.onload = function() {
+                    //     if (xhr.status === 200) {
+                    //     let response = JSON.parse(xhr.responseText);
+                    //     let text = response.text;
+                    //     // Display the extracted text
+                    //     document.getElementById("target").innerHTML = target;
+                    //     document.getElementById("sound").innerHTML = sound;
+                    //     document.getElementById("ck").innerHTML = ck;
+                    //     }
+                    // };
+                    xhr.send(fd);
+                    xhr.onreadystatechange = function() {
+                        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                            // Request was successful
+                            window.location = "/";
+                        }
+                    };
+                    }
+                    
+
+                    // fetch("http://localhost:5000/STT", {
+                    //     method: "POST",
+                    //     body: fd
+                    // })
+                    // .then(response => response.text())
+                    // .then(text => {
+                    //     alert(text);
+                    // });
+                
+                //
                 //-------------------------------------------------------------------------------------            
                 function playRecording() {
                     recorder.play(audio);
@@ -238,6 +300,7 @@
             </script>
         </div>
         <!--모델-->
+
 
     </div>
     <h2>
