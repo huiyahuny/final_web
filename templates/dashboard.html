@@ -63,6 +63,8 @@
                   </li>
                   
                   <li><a href="#" onClick="captureCurrentPage();"><i class="fa fa-download"></i> Download <span class="fa fa-chevron-down"></span></a></li>
+                  <li><a href="{{ url_for('static', filename='download/brain_training.pdf') }}" download>중앙치매센터_두근두근 뇌운동</a></li>
+                  <li><a href="{{ url_for('static', filename='download/K-MoCA.pdf') }}" download>K-MoCA_인지검사지</a></li>
                   <script>
                     function captureCurrentPage() {
 
@@ -73,6 +75,7 @@
                         link.click();
                       });
                     }
+                  
 </script>
 
 
@@ -708,13 +711,15 @@
                         <div class="block">
                           <div class="block_content">
                             <h2 class="title">
-                                              <a>두근두근<br>뇌운동</a>
+                                              <a href="https://www.newsthevoice.com/news/articleView.html?idxno=29005">치매의 시작, '경도인지장애'<br>중요성 부각한 치매학회</a>
                                           </h2>
                             <div class="byline">
                               <span>13 hours ago</span> by <a>Jane Smith</a>
                             </div>
-                            <p class="excerpt">건강한 뇌를 위해, 인지능력 향상을 위해<br>
-                              중앙치매센터의 뇌 운동 자료집!<br><a href="{{ url_for('static', filename='download/brain_training.pdf') }}" download>다운로드</a>
+                            <p class="excerpt">국민 10명 중 6명 '경도인지장애' "모른다" 응답<br>
+                              "경도인지장애' 적극적 진단과 치료 필요성 강조<br>
+                              '치매친화적' 인프라 구축 필요성에 방점<br>
+                              <br><a href="https://www.newsthevoice.com/news/articleView.html?idxno=29005">다운로드</a>
                             </p>
                           </div>
                         </div>
