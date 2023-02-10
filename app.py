@@ -440,6 +440,24 @@ def get_screenshot():
 
 DATABASE_URI = 'ijm.db'
 
+
+
+    # ---- DB에서 구조 생성 ----
+# conn = sql.connect(DATABASE_URI, isolation_level=None)
+# cur = conn.cursor()
+# cur.execute(
+#     'CREATE TABLE IF NOT EXISTS STT (id TEXT, target TEXT, user_sound TEXT, ck TEXT, score TEXT)')
+# id = 1
+# target = "강아지가 방에 들어오면 고양이는 의자 밑에 숨는다"
+
+# conn = sql.connect(DATABASE_URI, isolation_level=None)
+# cur = conn.cursor()
+# cur.execute("""INSERT INTO STT(id, target) 
+#             VALUES(?, ?)""", (id, target))
+
+
+# ----------------------------------------------------------------------연결
+
 conn = sql.connect(DATABASE_URI, isolation_level=None)
 cur = conn.cursor()
 
