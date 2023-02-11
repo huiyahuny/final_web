@@ -1,33 +1,56 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=0.1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=0.1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-32x32.png') }}"
-        sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-16x16.png') }}"
-        sizes="16x16" />
-    <title>MCI</title>
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-32x32.png') }}" sizes="32x32" />
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-16x16.png') }}" sizes="16x16" />
+        <title>MCI</title>
 
-    <!--stylesheet-->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-        type="text/css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/styles.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}" type="text/css">
+        <!--stylesheet-->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/styles.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles/custom-responsive-styles.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/static/styles/huiyacanvars.css') }}" type="text/css">
 
+    <title>check</title>
+
+    <style>
+        body {background-image: url(../static/images/back7.JPG);
+            background-repeat: no-repeat;
+            background-size: cover};
+        h1 {font-family: 'Times New Roman', Times, serif; padding: 7px;}
+        li {font-weight: bolder; list-style: none; font-size : 15px}
+        span {font-weight: lighter;}
+    </style>
 
     <!--TTS-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Test Sound</title>
     <title>check</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='6/css/style.css') }}" type="text/css">
-  
+
+    
+</head>
+
+<body>
+    <br>
+    <h1 align="center"> 문장 따라 말하기 </h1>
+    <h5>
+        <p style="text-align:center;">제시되는 문장을 따라 말하고 제출해주세요</p>
+    </h5>
+    <br>
+    <div id="image-container">
+        <img src="{{ url_for('static', filename = 'face/seungwoo.png')}}" alt="Image">
+        <div id="speech-bubble">
+            <p>이제 다했어<br> 조금만 더<br> 화이팅!</p>
+        </div>
+    </div>
     <style>
         #image-container {
           position: fixed;
@@ -58,59 +81,50 @@
           display: block;
         }
       </style>
-</head>
+      <br>
 
-<body>
-    <br>
-    <h1 align="center"> 문장 따라 말하기 </h1>
-    <h6><p style="text-align:center;">제시되는 문장을 따라 말하고 제출 버튼을 눌러주세요</p></h6>
-    <br>
-    <div id="image-container">
-        <img src="{{ url_for('static', filename = 'face/seungwoo.png')}}" alt="Image">
-        <div id="speech-bubble">
-          <p>이제 다했어<br> 조금만 더<br> 화이팅!</p>
-        </div>
-      </div>
-      
-      <div class="container">
+    <div class="container">
         <div style="border: px solid; padding :10px; width: 820px; 
         height: 450px ; border-radius:2em; margin : auto;
         padding-top:50px; background-color:rgb(255, 255, 255) ">
 
             <div id=baijing>
-                <div id='sound_head'>
-                    <audio id='jsrecode' autoplay></audio> <!-- 시작버튼 -->
-                    <div class='line'>
-                        <input id='start' class="btn" onclick="startRecording()" type="submit" value="시작" />
-                    </div>
-                    <div class='line'>
-                        <!-- <form action="/STT" method="post"> -->
-                        <!-- 멈추기버튼 -->
-                        <input class="btn" onclick="stopRecording()" id='dw' type="submit" value="멈춰" />
-                        <!-- </form> -->
-                    </div>
-                </div>
+                <br><br><br>
                 <div id='contens'>
                     <div class='qu'>
                         <input id="code_reddit" type="hidden" value="{{ target }}" autocomplete="off">
-                        <button class="btn" onclick="g_gout()">재생</button> <!-- 정답 읽어주는 재생버튼 -->
+                        <!-- <button class="btn" onclick="g_gout()">재생</button>  -->
                         <div class='line'></div>
-                        <table border=0 class='target_align'>
-                            <th>따라하기 : </td>
-                            <td>{{ target }}</td>
-                        </table>
+                        <!-- <table border=0 class='target_align'> -->
+                        <!-- <th>따라하기 : </td> -->
+                        <h3>{{ target }}</h3>
+                        <!-- </table> -->
                     </div>
-                    <div class='qu'>
-                        <table border=0 class='target_align'>
-                            <!--<div class='line'><input onclick="playRecording()" type="button" value="播放" /></div> -->
-                            <th>인식결과 : </td>
+                    <!-- <div class='qu'>
+                        <table border=0 class='target_align'> -->
+                    <!--<div class='line'><input onclick="playRecording()" type="button" value="播放" /></div> -->
+                    <!-- <th>인식결과 : </td>
                             <td>{{ sound }}</td>
                         </table>
                     </div>
                     <div id='result'>
                         <td>{{ ck }}</td>
+                    </div> -->
+                </div>
+                <br><br>
+                <div id='sound_head'>
+                    <audio id='jsrecode' autoplay></audio> <!-- 시작버튼 -->
+                    <div class='line'>
+                        <input id='start' class="btn" onclick="startRecording()" type="submit" value="따라말하기" />
+                    </div>
+                    <div class='line'>
+                        <!-- <form action="/STT" method="post"> -->
+                        <!-- 멈추기버튼 -->
+                        <input class="btn" onclick="stopRecording()" id='dw' type="submit" value="제출하기" />
+                        <!-- </form> -->
                     </div>
                 </div>
+
                 <!--<input onclick="uploadAudio()" type="button" value="提交" />-->
                 <div id="recordingslist"></div>
             </div>
@@ -201,24 +215,24 @@
                     //     }
                     // };
                     xhr.send(fd);
-                    xhr.onreadystatechange = function() {
-                        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                            // Request was successful
-                            window.location = "/";
-                        }
-                    };
-                    }
-                    
+                    // xhr.onreadystatechange = function() {
+                    //     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    //         // Request was successful
+                    //         window.location = "/";
+                    //     }
+                    // };
+                }
 
-                    // fetch("http://localhost:5000/STT", {
-                    //     method: "POST",
-                    //     body: fd
-                    // })
-                    // .then(response => response.text())
-                    // .then(text => {
-                    //     alert(text);
-                    // });
-                
+
+                // fetch("http://localhost:5000/STT", {
+                //     method: "POST",
+                //     body: fd
+                // })
+                // .then(response => response.text())
+                // .then(text => {
+                //     alert(text);
+                // });
+
                 //
                 //-------------------------------------------------------------------------------------            
                 function playRecording() {
@@ -301,13 +315,12 @@
         </div>
         <!--모델-->
 
-
     </div>
     <h2>
         <div>
             <center>
                 <br>
-                <input type="button" value="모두 제출하기" style="
+                <input type="button" value="결과보러가기" style="
                 width: 180px; height:100; padding-top:12px; padding-bottom:12px;
                 border-radius:15px; cursor : pointer ;  font-size:19px; 
                 font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -361,4 +374,5 @@
 
 
 </body>
+
 </html>
